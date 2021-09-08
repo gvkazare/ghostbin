@@ -1,18 +1,21 @@
-FROM golang:1.8.3-alpine3.6
+FROM golang:1.17.0-alpine3.13
 
 RUN apk add --update \
     git \
     py-pygments \
     sudo \
-    nodejs nodejs-npm && npm install npm@latest -g \
+    nodejs \
+    nodejs-npm \
+    && npm install npm@latest -g \
     && rm -rf /var/cache/apk/* \
     && adduser -h /ghostbin -u 10000 -D -g "" ghostbin
 USER ghostbin
 ENV GOPATH=/ghostbin/go
+
 RUN mkdir -p /ghostbin/go/src/github.com/DHowett \
-    && git clone https://github.com/DHowett/ghostbin.git /ghostbin/go/src/github.com/DHowett/ghostbin \
+    && git clone https://github.com/gvkazare/spectre.git /ghostbin/go/src/github.com/DHowett/ghostbin \
     && cd /ghostbin/go/src/github.com/DHowett/ghostbin \
-    && git checkout -b v1-stable c392751c67afa1c1f0c6771ab6a99da2ef5c5c41 \
+    && git checkout v1-stable \
 # Change pygmentize path
     && sed -i -e 's:./bin/pygments/pygmentize:/usr/bin/pygmentize:g' languages.yml \
     && echo "Go get" \
